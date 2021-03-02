@@ -41,6 +41,8 @@ Route::group(['middleware' => 'auth:api'], function ()
     Route::group(['middleware' => 'admin', 'namespace' => 'Admin', 'prefix' => 'admin'], function ()
     {
         Route::apiResource('users', 'UserController');
+
+        Route::get('get-users', 'TaskController@getUsers');
         Route::apiResource('tasks', 'TaskController');
     });
 });

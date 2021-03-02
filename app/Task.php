@@ -17,4 +17,10 @@ class Task extends Model
     protected $casts = [
         'due_date' => 'datetime',
     ];
+
+    public function user(): \Illuminate\Database\Eloquent\Relations\BelongsTo
+    {
+        return $this->belongsTo(User::class);
+    }
+
 }
