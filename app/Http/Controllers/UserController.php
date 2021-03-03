@@ -79,7 +79,7 @@ class UserController extends ApiController
 
     public function getTasks()
     {
-        $tasks = auth()->user()->tasks;
+        $tasks = auth()->user()->tasks()->with('user')->paginate();
         return $this->successResponse(['tasks' => $tasks], 200);
     }
 

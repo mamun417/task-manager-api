@@ -4,10 +4,12 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\ApiController;
 use App\Http\Controllers\Controller;
+use App\Notifications\TaskCreateNotification;
 use App\Task;
 use App\User;
 use Illuminate\Http\Request;
 use Tymon\JWTAuth\Claims\Subject;
+use Twilio\Rest\Client;
 
 class TaskController extends ApiController
 {
@@ -29,6 +31,22 @@ class TaskController extends ApiController
         $requested_data = $request->only(['user_id', 'title', 'description', 'due_date']);
 
         $task = Task::create($requested_data);
+
+        $user = User::find($request->user_id);
+        $user->notify(new TaskCreateNotification($task));
+
+
+        $sid = "AC76173bb62863909afab526ae4f9fb5be";
+        $token = "c5f5a40b8a2ac01cffdb45a5501601e2";
+        $twilio = new Client($sid, $token);
+
+        $message = $twilio->messages
+            ->create("+880 1750-800764", // to
+                array(
+                    "body" => "Hello, " . $user->name . ". A new task assign for you.",
+                    "from" => "+12134637122",
+                )
+            );
 
         return $this->successResponse(['task' => $task], 200);
     }

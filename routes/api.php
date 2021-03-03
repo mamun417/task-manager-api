@@ -12,7 +12,6 @@
 */
 
 // start auth
-Route::post('register', 'ApiAuth\RegisterController@register');
 Route::post('password/email', 'ApiAuth\ForgotPasswordController@sendResetLinkEmail');
 Route::put('password/reset', 'ApiAuth\ResetPasswordController@reset');
 
