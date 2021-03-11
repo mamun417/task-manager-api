@@ -42,6 +42,7 @@ Route::group(['middleware' => 'auth:api'], function ()
         Route::apiResource('users', 'UserController');
 
         Route::get('get-users', 'TaskController@getUsers');
+        Route::get('tasks/report', 'TaskController@getReport');
         Route::apiResource('tasks', 'TaskController');
     });
 });

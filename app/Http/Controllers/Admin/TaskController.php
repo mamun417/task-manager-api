@@ -7,7 +7,9 @@ use App\Http\Controllers\Controller;
 use App\Notifications\TaskCreateNotification;
 use App\Task;
 use App\User;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Symfony\Component\VarDumper\Cloner\Data;
 use Tymon\JWTAuth\Claims\Subject;
 use Twilio\Rest\Client;
 
@@ -79,5 +81,42 @@ class TaskController extends ApiController
     {
         $users = User::latest()->get();
         return $this->successResponse(['users' => $users], 200);
+    }
+
+    public function getReport(): \Illuminate\Http\JsonResponse
+    {
+        $year = request()->query('year') ?? date('Y');
+
+        $info = Task::whereYear('created_at', $year)
+            ->get()
+            ->groupBy(function ($task) {
+                return $task->created_at->format('F');
+            })->mapWithKeys(function ($tasks, $month) {
+                return [$month => count($tasks)];
+            })
+            ->reverse();
+
+        $years = $this->getTaskCreatedYearsList();
+
+        return $this->successResponse([
+            'report' => [
+                'info' => $info,
+                'target_year' => $year,
+                'years' => $years
+            ]
+        ], 200);
+    }
+
+    // get years list of task create
+    private function getTaskCreatedYearsList(): \Illuminate\Support\Collection
+    {
+        return Task::select('created_at')
+            ->pluck('created_at')
+            ->map(function ($task) {
+                return $task->format('Y');
+            })
+            ->unique()
+            ->sortDesc()
+            ->values();
     }
 }

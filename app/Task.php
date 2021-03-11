@@ -2,11 +2,12 @@
 
 namespace App;
 
+use Eloquent;
 use Illuminate\Database\Eloquent\Model;
 
 /**
- * @method static latest()
- * @method static create(array $requested_data)
+ * Class Task
+ * @mixin Eloquent
  */
 class Task extends Model
 {

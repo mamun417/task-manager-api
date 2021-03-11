@@ -10,6 +10,7 @@ $factory->define(Task::class, function (Faker $faker) {
         'user_id' => \App\User::all()->random(1)->first()->id, // user
         'title' => $faker->sentence(10),
         'description' => $faker->text,
-        'due_date' => $faker->dateTime
+        'due_date' => $faker->dateTime,
+        'created_at' => $faker->dateTime
     ];
 });
