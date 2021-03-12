@@ -11,6 +11,6 @@ $factory->define(Task::class, function (Faker $faker) {
         'title' => $faker->sentence(10),
         'description' => $faker->text,
         'due_date' => $faker->dateTime,
-        'created_at' => $faker->dateTime
+        'created_at' => $faker->dateTimeBetween('-4 years', 'now')
     ];
 });

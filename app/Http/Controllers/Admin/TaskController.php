@@ -8,6 +8,8 @@ use App\Notifications\TaskCreateNotification;
 use App\Task;
 use App\User;
 use Carbon\Carbon;
+use DateTime;
+use DB;
 use Illuminate\Http\Request;
 use Symfony\Component\VarDumper\Cloner\Data;
 use Tymon\JWTAuth\Claims\Subject;
@@ -90,11 +92,15 @@ class TaskController extends ApiController
         $info = Task::whereYear('created_at', $year)
             ->get()
             ->groupBy(function ($task) {
-                return $task->created_at->format('F');
-            })->mapWithKeys(function ($tasks, $month) {
-                return [$month => count($tasks)];
+                return $task->created_at->format('m');
             })
-            ->reverse();
+            ->sortKeys()
+            ->mapWithKeys(function ($tasks, $month) {
+                $dateObj = DateTime::createFromFormat('!m', $month);
+                $monthName = $dateObj->format('F'); // March
+
+                return [$monthName => count($tasks)];
+            });
 
         $years = $this->getTaskCreatedYearsList();
 
